@@ -1,5 +1,5 @@
 import { CreditCardOutlined } from "@ant-design/icons";
-import { Button, Input, notification } from "antd";
+import { Button, Input } from "antd";
 import Text from "antd/lib/typography/Text";
 import { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
@@ -47,75 +47,154 @@ function Transfer() {
   const [asset, setAsset] = useState();
   const [tx, setTx] = useState();
   const [amount, setAmount] = useState();
-  const [isPending, setIsPending] = useState(false);
+  const [isPending] = useState(false);
 
   useEffect(() => {
     asset && amount && receiver ? setTx({ amount, receiver, asset }) : setTx();
   }, [asset, amount, receiver]);
 
-  const openNotification = ({ message, description }) => {
-    notification.open({
-      placement: "bottomRight",
-      message,
-      description,
-      onClick: () => {
-        console.log("Notification Clicked!");
-      },
-    });
-  };
+  // const openNotification = ({ message, description }) => {
+  //   notification.open({
+  //     placement: "bottomRight",
+  //     message,
+  //     description,
+  //     onClick: () => {
+  //       console.log("Notification Clicked!");
+  //     },
+  //   });
+  // };
 
   async function transfer() {
-    const { amount, receiver, asset } = tx;
+    const { amount, asset } = tx;
 
-    let options = {};
+    const ABI = [
+      {
+        "constant": true,
+        "inputs": [],
+        "name": "manager",
+        "outputs": [
+          {
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "valor",
+            "type": "uint256"
+          }
+        ],
+        "name": "Claim",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "name": "players",
+        "outputs": [
+          {
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "constant": false,
+        "inputs": [],
+        "name": "enter",
+        "outputs": [],
+        "payable": true,
+        "stateMutability": "payable",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+      }
+    ];
 
-    switch (asset.token_address) {
-      case "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee":
-        options = {
-          native: "native",
-          amount: Moralis.Units.ETH(amount),
-          receiver,
-          awaitReceipt: false,
-        };
-        break;
-      default:
-        options = {
-          type: "erc20",
-          amount: Moralis.Units.Token(amount, asset.decimals),
-          receiver,
-          contractAddress: asset.token_address,
-          awaitReceipt: false,
-        };
-    }
+    const options = {
+      contractAddress: "0xb6489fcC9AB9E43bf01C48D97AaB05c2d81420c2",
+      functionName: "enter",
+      msgValue: Moralis.Units.Token(amount, asset.decimals),
+      abi: ABI
+    };
 
-    setIsPending(true);
-    const txStatus = await Moralis.transfer(options);
-
-    txStatus
-      .on("transactionHash", (hash) => {
-        openNotification({
-          message: "🔊 New Transaction",
-          description: `${hash}`,
-        });
-        console.log("🔊 New Transaction", hash);
-      })
-      .on("receipt", (receipt) => {
-        openNotification({
-          message: "📃 New Receipt",
-          description: `${receipt.transactionHash}`,
-        });
-        console.log("🔊 New Receipt: ", receipt);
-        setIsPending(false);
-      })
-      .on("error", (error) => {
-        openNotification({
-          message: "📃 Error",
-          description: `${error.message}`,
-        });
-        console.error(error);
-        setIsPending(false);
-      });
+    const receipt = await Moralis.executeFunction(options);
+    console.log(receipt)
   }
+
+  // async function transfer() {
+  //   const { amount, receiver, asset } = tx;
+  //
+  //   let options = {};
+  //
+  //   switch (asset.token_address) {
+  //     case "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee":
+  //       options = {
+  //         native: "native",
+  //         amount: Moralis.Units.ETH(amount),
+  //         receiver,
+  //         awaitReceipt: false,
+  //       };
+  //       break;
+  //     default:
+  //       options = {
+  //         type: "erc20",
+  //         amount: Moralis.Units.Token(amount, asset.decimals),
+  //         receiver,
+  //         contractAddress: asset.token_address,
+  //         awaitReceipt: false,
+  //       };
+  //   }
+  //
+  //   setIsPending(true);
+  //   const txStatus = await Moralis.transfer(options);
+  //
+  //   txStatus
+  //     .on("transactionHash", (hash) => {
+  //       openNotification({
+  //         message: "🔊 New Transaction",
+  //         description: `${hash}`,
+  //       });
+  //       console.log("🔊 New Transaction", hash);
+  //     })
+  //     .on("receipt", (receipt) => {
+  //       openNotification({
+  //         message: "📃 New Receipt",
+  //         description: `${receipt.transactionHash}`,
+  //       });
+  //       console.log("🔊 New Receipt: ", receipt);
+  //       setIsPending(false);
+  //     })
+  //     .on("error", (error) => {
+  //       openNotification({
+  //         message: "📃 Error",
+  //         description: `${error.message}`,
+  //       });
+  //       console.error(error);
+  //       setIsPending(false);
+  //     });
+  // }
 
   return (
     <div style={styles.card}>
