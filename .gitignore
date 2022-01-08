@@ -30,6 +30,13 @@ coverage
 coverage.json
 typechain
 
+/data
+data/!blockLogs!length
+data/!blocks!length
+package-lock.json
+/.idea
+.gitignore
+
 #Truffle files
 /Truffle/build
 /Truffle/data
