@@ -42,7 +42,9 @@ const styles = {
 
 function Transfer() {
 
-  const { Moralis, isAuthenticated } = useMoralis();
+  const [currentBalance, setCurrentBalance] = useState(0)
+  const [beneficiaryTokenBalance, setBeneficiaryTokenBalance] = useState(0)
+  const { Moralis, isAuthenticated, account } = useMoralis();
   const [tx, setTx] = useState();
   const [amount, setAmount] = useState();
   const [isPending] = useState(false);
@@ -52,7 +54,6 @@ function Transfer() {
   useEffect(() => {
     amount ? setTx({ amount }) : setTx();
   }, [amount]);
-
 
   async function enter() {
     const { amount } = tx;
@@ -68,27 +69,48 @@ function Transfer() {
     console.log(receipt)
   }
 
-  let currentBalance = 0;
 
-  async function getBalance() {
+  useEffect(() => {
+    async function getBalance() {
 
-    const options = {
-      contractAddress: mainContractAddress,
-      functionName: "TokensAvailable",
-      abi: ABI
-    };
+      const options = {
+        contractAddress: mainContractAddress,
+        functionName: "TokensAvailable",
+        abi: ABI
+      };
 
-    const receipt = await Moralis.executeFunction(options);
-    console.log("This is the receipt for the TokensAvailable: " + receipt)
-    return receipt;
-  }
+      const receipt = await Moralis.executeFunction(options);
+      setCurrentBalance(Moralis.Units.FromWei(receipt, 18).toFixed(2));
+    }
 
-  if (isAuthenticated) {
-    Moralis.enableWeb3();
-    // getBalance().then((res) => {
-    //   currentBalance = res;
-    // });
-  }
+    if (isAuthenticated) {
+      getBalance();
+    }
+  }, [Moralis, isAuthenticated]);
+
+  useEffect(() => {
+    async function getBeneficiaryBalance() {
+
+      const options = {
+        contractAddress: mainContractAddress,
+        functionName: "beneficiarys",
+        params: {
+          "" : account
+        },
+        abi: ABI
+      };
+
+      const receipt = await Moralis.executeFunction(options);
+      console.log(receipt);
+      setBeneficiaryTokenBalance(Moralis.Units.FromWei(receipt, 18).toFixed(2));
+    }
+
+    if (isAuthenticated) {
+      getBeneficiaryBalance().catch(err => {
+        console.log(err);
+      });
+    }
+  }, [Moralis, isAuthenticated, account]);
 
   async function claim() {
     const options = {
@@ -106,6 +128,12 @@ function Transfer() {
       <div style={styles.tranfer}>
         <div style={styles.header}>
           <h3>Allard Tokens Available: {currentBalance}</h3>
+        </div>
+        <div style={styles.header}>
+          <h3>Total purchased tokens: {beneficiaryTokenBalance}</h3>
+        </div>
+        <div style={styles.header}>
+          <h3>Available to withdraw: {beneficiaryTokenBalance}</h3>
         </div>
         <div style={styles.select}>
           <div style={styles.textWrapper}>
