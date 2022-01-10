@@ -1,33 +1,12 @@
 export const ABI = [
     {
-        "inputs": [],
-        "name": "available_percentage",
-        "outputs": [
+        "inputs": [
             {
-                "internalType": "int256",
-                "name": "",
-                "type": "int256"
+                "internalType": "contract IERC20",
+                "name": "token_",
+                "type": "address"
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "BuyAllardTokens",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "Claim",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
         "stateMutability": "nonpayable",
         "type": "constructor"
     },
@@ -91,14 +70,15 @@ export const ABI = [
         "type": "error"
     },
     {
-        "inputs": [
-            {
-                "internalType": "contract IERC20",
-                "name": "token_",
-                "type": "address"
-            }
-        ],
-        "name": "SetToken",
+        "inputs": [],
+        "name": "BuyAllardTokens",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "Claim",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -106,12 +86,12 @@ export const ABI = [
     {
         "inputs": [
             {
-                "internalType": "int256",
-                "name": "amountBuyTokens",
-                "type": "int256"
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
             }
         ],
-        "name": "SetTokensAvailable",
+        "name": "Purchased_Tokens",
         "outputs": [
             {
                 "internalType": "int256",
@@ -119,7 +99,7 @@ export const ABI = [
                 "type": "int256"
             }
         ],
-        "stateMutability": "nonpayable",
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -130,20 +110,14 @@ export const ABI = [
                 "type": "uint256"
             }
         ],
-        "name": "SetUnlock",
+        "name": "SetUnlock_Start",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "beneficiarys",
+        "inputs": [],
+        "name": "TokensAvailable",
         "outputs": [
             {
                 "internalType": "int256",
@@ -156,12 +130,31 @@ export const ABI = [
     },
     {
         "inputs": [],
-        "name": "initial_unlock",
+        "name": "Unlock_Start",
         "outputs": [
             {
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "beneficiarys",
+        "outputs": [
+            {
+                "internalType": "int256",
+                "name": "",
+                "type": "int256"
             }
         ],
         "stateMutability": "view",
@@ -181,25 +174,6 @@ export const ABI = [
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "purchased_beneficiarys",
-        "outputs": [
-            {
-                "internalType": "int256",
-                "name": "",
-                "type": "int256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [],
         "name": "token",
         "outputs": [
@@ -211,20 +185,7 @@ export const ABI = [
         ],
         "stateMutability": "view",
         "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "TokensAvailable",
-        "outputs": [
-            {
-                "internalType": "int256",
-                "name": "",
-                "type": "int256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
     }
 ];
 
-export const mainContractAddress = "0x8279a65A299c80CdB2e028C8dA48532b2B45df48";
+export const mainContractAddress = "0xefB3d8339fA47c92671cd3E262B8Df4e8335D358";
