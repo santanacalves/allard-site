@@ -41,15 +41,12 @@ const styles = {
 };
 
 function Transfer() {
-
   const [currentBalance, setCurrentBalance] = useState(0)
   const [beneficiaryTokenBalance, setBeneficiaryTokenBalance] = useState(0)
   const { Moralis, isAuthenticated, account } = useMoralis();
   const [tx, setTx] = useState();
   const [amount, setAmount] = useState();
   const [isPending] = useState(false);
-
-  Moralis.enableWeb3();
 
   const getBalance = useCallback(async ()=>{
 
